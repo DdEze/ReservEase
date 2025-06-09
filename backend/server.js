@@ -4,8 +4,8 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 
 const authRoutes = require('./routes/authRoutes');
-// const bookingRoutes = require('./routes/bookingRoutes');
-// const spaceRoutes = require('./routes/spaceRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
+const spaceRoutes = require('./routes/spaceRoutes');
 
 const app = express();
 
@@ -15,8 +15,8 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
-// app.use('/api/bookings', bookingRoutes);
-// app.use('/api/spaces', spaceRoutes);
+app.use('/api/reservation', reservationRoutes);
+app.use('/api/spaces', spaceRoutes);
 
 // Conectar base de datos y arrancar servidor
 const PORT = process.env.PORT || 5000;
