@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser } = require('../controllers/authController');
+const { register, login } = require('../controllers/authController');
 const { registerValidator } = require('../validators/authValidator');
 const validate = require('../middleware/validationMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
+const requireAdmin = require('../middleware/requireAdmin');
+const User = require('../models/User');
 
-router.post('/register', registerValidator, validate, registerUser);
-router.post('/login', loginUser);
+router.post('/register', registerValidator, validate, register);
+router.post('/login', login);
 router.delete('/delete/:email', authMiddleware, requireAdmin, async (req, res) => {
   try {
     const deleted = await User.findOneAndDelete({ email: req.params.email });
