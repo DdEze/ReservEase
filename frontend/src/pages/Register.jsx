@@ -3,7 +3,7 @@ import {
   Container, TextField, Button, Typography, Box, Alert
 } from '@mui/material';
 import axios from '../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -37,6 +37,12 @@ const Register = () => {
           <TextField fullWidth label="Contraseña" name="password" type="password" margin="normal" onChange={handleChange} required />
           <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>Registrarse</Button>
         </form>
+        <Typography variant="body2" sx={{ mt: 2 }}>
+        ¿Ya tenés una cuenta?{' '}
+        <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
+          Iniciá sesión
+        </Link>
+      </Typography>
       </Box>
     </Container>
   );
