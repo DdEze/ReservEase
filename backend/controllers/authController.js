@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 const generarToken = (user) => {
   return jwt.sign(
-    { id: user._id, role: user.role },
+    { id: user._id, role: user.roles },
     process.env.JWT_SECRET,
     { expiresIn: '2h' }
   );
@@ -44,7 +44,7 @@ const login = async (req, res) => {
     if (!valido) return res.status(401).json({ message: 'Contraseña incorrecta' });
 
     const token = generarToken(usuario);
-    res.status(200).json({ token, user: { name: usuario.name, email, role: usuario.role } });
+    res.status(200).json({ token, user: { name: usuario.name, surname: usuario.surname, email, role: usuario.role } });
   } catch (error) {
     res.status(500).json({ message: 'Error en el login', error });
   }
