@@ -1,6 +1,6 @@
 const Space = require('../models/Space');
 
-exports.getSpaces = async (req, res) => {
+const getSpaces = async (req, res) => {
   try {
     const espacios = await Space.find();
     res.json(espacios);
@@ -9,7 +9,7 @@ exports.getSpaces = async (req, res) => {
   }
 };
 
-exports.createSpace = async (req, res) => {
+const createSpace = async (req, res) => {
   const { name, location, capacity, description } = req.body;
   try {
     const nuevo = new Space({ name, location, capacity, description });
@@ -19,3 +19,5 @@ exports.createSpace = async (req, res) => {
     res.status(500).json({ message: 'Error creando espacio', error });
   }
 };
+
+module.exports = { getSpaces, createSpace };
