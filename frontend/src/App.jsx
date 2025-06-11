@@ -2,6 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Spaces from './pages/Spaces';
+import NewReservation from './pages/NewReservation';
+import MyReservations from './pages/MyReservations';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar'
 
@@ -24,7 +27,15 @@ function App() {
           path="/spaces"
           element={
             <PrivateRoute>
-              <div>Página de Espacios</div>
+              <Spaces />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/reservations/new/:spaceId"
+          element={
+            <PrivateRoute>
+              <NewReservation />
             </PrivateRoute>
           }
         />
@@ -32,7 +43,7 @@ function App() {
           path="/reservations"
           element={
             <PrivateRoute>
-              <div>Página de Reservas</div>
+              <MyReservations />
             </PrivateRoute>
           }
         />
