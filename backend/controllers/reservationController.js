@@ -1,6 +1,6 @@
 const Reservation = require('../models/Reservation');
 
-exports.createReservation = async (req, res) => {
+const createReservation = async (req, res) => {
   const { space, date, timeStart, timeEnd, note } = req.body;
   try {
     const reserva = new Reservation({
@@ -18,7 +18,7 @@ exports.createReservation = async (req, res) => {
   }
 };
 
-exports.getMyReservations = async (req, res) => {
+const getMyReservations = async (req, res) => {
   try {
     const reservas = await Reservation.find({ user: req.user.id }).populate('space');
     res.json(reservas);
@@ -26,3 +26,21 @@ exports.getMyReservations = async (req, res) => {
     res.status(500).json({ message: 'Error obteniendo reservas', error });
   }
 };
+
+const deleteReservation = async (req, res) => {
+  try {
+    const reservation = await Reservation.findById(req.params.id);
+
+    if (!reservation) return res.status(404).json({ message: 'Reserva no encontrada' });
+    if (reservation.user.toString() !== req.user.id)
+      return res.status(403).json({ message: 'No autorizado' });
+
+    await reservation.deleteOne();
+    res.json({ message: 'Reserva cancelada' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al cancelar la reserva' });
+  }
+};
+
+
+module.exports = { createReservation, getMyReservations, deleteReservation };
