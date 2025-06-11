@@ -20,7 +20,6 @@ const Navbar = () => {
         <Typography variant="h6" component="div">
           ReservEase
         </Typography>
-
         <Box>
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/spaces">Espacios</Button>
