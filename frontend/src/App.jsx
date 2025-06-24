@@ -8,6 +8,7 @@ import MyReservations from './pages/MyReservations';
 import CreateSpace from './pages/admin/CreateSpace';
 import SpaceList from './pages/admin/SpaceList';
 import EditSpace from './pages/admin/EditSpace';
+import UserList from './pages/admin/UserList';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar'
 
@@ -71,6 +72,14 @@ function App() {
           element={
             <PrivateRoute adminOnly={true}>
               <EditSpace />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/usuarios"
+          element={
+            <PrivateRoute adminOnly={true}>
+              <UserList />
             </PrivateRoute>
           }
         />
