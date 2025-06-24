@@ -50,4 +50,32 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener los usuarios' });
+  }
+};
+
+const updateUserRole = async (req, res) => {
+  const { role } = req.body;
+
+  if (!['user', 'admin'].includes(role)) {
+    return res.status(400).json({ message: 'Rol inválido' });
+  }
+
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    user.role = role;
+    await user.save();
+    res.json({ message: 'Rol actualizado correctamente' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al actualizar rol' });
+  }
+};
+
+module.exports = { register, login, getAllUsers, updateUserRole };
