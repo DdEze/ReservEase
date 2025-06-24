@@ -1,78 +1,83 @@
 import React, { useEffect, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Container,
   Typography,
   List,
   ListItem,
   ListItemText,
-  Divider,
   Alert,
-  IconButton,
-  ListItemSecondaryAction
+  Button,
+  Box
 } from '@mui/material';
-import axios from 'axios';
+import axios from '../api/axios';
 
 const MyReservations = () => {
   const [reservations, setReservations] = useState([]);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const fetchReservations = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/reservation/mine', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setReservations(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error('Error al obtener reservas:', err);
+      setError('No se pudieron cargar tus reservas');
+    }
+  };
 
   useEffect(() => {
-    const fetchReservations = async () => {
-        try {
-        const response = await axios.get('/api/reservation/my');
-        if (Array.isArray(response.data)) {
-            setReservations(response.data);
-        } else {
-            setReservations([]);
-        }
-        } catch (error) {
-        setReservations([]);
-        }
-    };
-
     fetchReservations();
-    }, []);
+  }, []);
 
-const handleDelete = async (id) => {
-  try {
-    await axios.delete(`/api/reservation/${id}`);
-    setReservations(reservations.filter((res) => res._id !== id));
-  } catch (err) {
-    setError('Error al cancelar la reserva');
-  }
-};
+  const handleCancel = async (id) => {
+    const confirm = window.confirm('¿Estás seguro de cancelar esta reserva?');
+    if (!confirm) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/reservation/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSuccess('Reserva cancelada correctamente');
+      fetchReservations();
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo cancelar la reserva');
+    }
+  };
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Mis Reservas
-      </Typography>
-
-      {error && <Alert severity="error">{error}</Alert>}
-
-      {reservations.length === 0 ? (
-        <Typography variant="body1">No tenés reservas aún.</Typography>
-      ) : (
-        <List>
-          {reservations.map((res) => (
-            <React.Fragment key={res._id}>
-              <ListItem>
-                <ListItemText
-                  primary={res.space?.name || 'Espacio eliminado'}
-                  secondary={`Fecha: ${res.date} - Hora: ${res.time}`}
-                />
-                <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={() => handleDelete(res._id)}>
-                        <DeleteIcon />
-                    </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))}
-        </List>
-      )}
+      <Typography variant="h4" gutterBottom>Mis Reservas</Typography>
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+      <List>
+        {reservations.length === 0 ? (
+          <Typography>No tenés reservas activas.</Typography>
+        ) : (
+          reservations.map((res) => (
+            <ListItem key={res._id} divider>
+              <ListItemText
+                primary={`Espacio: ${res.space?.name ?? 'Desconocido'}`}
+                secondary={`Fecha: ${new Date(res.date).toLocaleDateString()} | ${res.timeStart} - ${res.timeEnd}`}
+              />
+              <Box>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleCancel(res._id)}
+                >
+                  Cancelar
+                </Button>
+              </Box>
+            </ListItem>
+          ))
+        )}
+      </List>
     </Container>
   );
 };

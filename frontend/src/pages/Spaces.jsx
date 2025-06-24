@@ -14,6 +14,7 @@ import axios from 'axios';
 
 const Spaces = () => {
   const [spaces, setSpaces] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSpaces = async () => {

@@ -45,7 +45,7 @@ const SpaceList = () => {
         <Button
             variant="contained"
             color="primary"
-            onClick={() => navigate('/admin/crear-espacio')}
+            onClick={() => navigate('/admin/spaces/new')}
         >
             Crear nuevo espacio
         </Button>

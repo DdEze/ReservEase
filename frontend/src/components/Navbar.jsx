@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -24,6 +25,15 @@ const Navbar = () => {
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/spaces">Espacios</Button>
           <Button color="inherit" component={Link} to="/reservations">Reservas</Button>
+
+          {/* BOTONES EXCLUSIVOS PARA ADMIN */}
+          {user.role === 'admin' && (
+            <>
+              <Button color="inherit" component={Link} to="/admin/spaces">Gestionar espacios</Button>
+              <Button color="inherit" component={Link} to="/admin/usuarios">Usuarios</Button>
+            </>
+          )}
+
           <Button color="inherit" onClick={handleLogout}>Cerrar sesión</Button>
         </Box>
       </Toolbar>

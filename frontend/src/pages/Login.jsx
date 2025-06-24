@@ -21,7 +21,12 @@ const Login = () => {
     setError('');
     try {
       const res = await axios.post('/auth/login', form);
-      setUser(res.data.user);
+      const { token, user } = res.data;
+
+      localStorage.setItem('token', token);
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
+
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.msg || 'Error al iniciar sesión');

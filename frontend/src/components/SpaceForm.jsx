@@ -11,7 +11,7 @@ const SpaceForm = ({ initialData = {}, onSubmit, submitText = "Guardar" }) => {
   });
 
   useEffect(() => {
-    if (initialData) {
+    if (initialData && Object.keys(initialData).length > 0) {
       setFormData({
         name: initialData.name || '',
         location: initialData.location || '',
@@ -20,7 +20,7 @@ const SpaceForm = ({ initialData = {}, onSubmit, submitText = "Guardar" }) => {
         available: initialData.available ?? true,
       });
     }
-  }, [initialData]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

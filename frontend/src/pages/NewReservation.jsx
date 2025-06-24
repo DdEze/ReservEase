@@ -8,20 +8,22 @@ import {
   Alert
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 
 const NewReservation = () => {
   const { spaceId } = useParams();
   const [space, setSpace] = useState(null);
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [timeStart, setTimeStart] = useState('');
+  const [timeEnd, setTimeEnd] = useState('');
+  const [note, setNote] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSpace = async () => {
       try {
-        const res = await axios.get(`/api/spaces/${spaceId}`);
+        const res = await axios.get(`/spaces/${spaceId}`);
         setSpace(res.data);
       } catch (err) {
         setError('Error al cargar el espacio');
@@ -32,19 +34,28 @@ const NewReservation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!date || !time) {
-      return setError('Por favor completá la fecha y hora');
+
+    if (!date || !timeStart || !timeEnd) {
+      return setError('Por favor completá todos los campos requeridos');
     }
 
     try {
-      await axios.post('/api/reservation', {
+      const token = localStorage.getItem('token');
+      await axios.post('/reservation', {
         space: spaceId,
         date,
-        time,
+        timeStart,
+        timeEnd,
+        note,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
       navigate('/reservations');
     } catch (err) {
+      console.error(err);
       setError('No se pudo crear la reserva');
     }
   };
@@ -66,15 +77,36 @@ const NewReservation = () => {
           InputLabelProps={{ shrink: true }}
           value={date}
           onChange={(e) => setDate(e.target.value)}
+          required
         />
         <TextField
-          label="Hora"
+          label="Hora de inicio"
           type="time"
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
+          value={timeStart}
+          onChange={(e) => setTimeStart(e.target.value)}
+          required
+        />
+        <TextField
+          label="Hora de fin"
+          type="time"
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true }}
+          value={timeEnd}
+          onChange={(e) => setTimeEnd(e.target.value)}
+          required
+        />
+        <TextField
+          label="Nota (opcional)"
+          multiline
+          rows={3}
+          fullWidth
+          margin="normal"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
         />
         <Button type="submit" variant="contained" sx={{ mt: 2 }}>
           Confirmar Reserva
