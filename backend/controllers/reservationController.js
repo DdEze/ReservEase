@@ -2,7 +2,23 @@ const Reservation = require('../models/Reservation');
 
 const createReservation = async (req, res) => {
   const { space, date, timeStart, timeEnd, note } = req.body;
+
   try {
+    const overlapping = await Reservation.findOne({
+      space,
+      date,
+      $or: [
+        {
+          timeStart: { $lt: timeEnd },
+          timeEnd: { $gt: timeStart }
+        }
+      ]
+    });
+
+    if (overlapping) {
+      return res.status(400).json({ message: 'Ya existe una reserva que se superpone con ese horario.' });
+    }
+
     const reserva = new Reservation({
       user: req.user.id,
       space,
@@ -11,6 +27,7 @@ const createReservation = async (req, res) => {
       timeEnd,
       note
     });
+
     await reserva.save();
     res.status(201).json(reserva);
   } catch (error) {
