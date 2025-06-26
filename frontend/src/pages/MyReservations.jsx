@@ -10,6 +10,7 @@ import {
   Box
 } from '@mui/material';
 import axios from '../api/axios';
+import dayjs from 'dayjs';
 
 const MyReservations = () => {
   const [reservations, setReservations] = useState([]);
@@ -63,7 +64,7 @@ const MyReservations = () => {
             <ListItem key={res._id} divider>
               <ListItemText
                 primary={`Espacio: ${res.space?.name ?? 'Desconocido'}`}
-                secondary={`Fecha: ${new Date(res.date).toLocaleDateString()} | ${res.timeStart} - ${res.timeEnd}`}
+                secondary={`Fecha: ${dayjs(res.date).format('DD/MM/YYYY')} | ${res.timeStart} - ${res.timeEnd}`}
               />
               <Box>
                 <Button

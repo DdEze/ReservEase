@@ -4,7 +4,7 @@ import {
   TableHead, TableRow, IconButton, Box
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import axios from 'axios';
+import axios from '../../api/axios'
 import { useNavigate } from 'react-router-dom';
 
 const SpaceList = () => {
@@ -13,7 +13,7 @@ const SpaceList = () => {
 
   const fetchSpaces = async () => {
     try {
-      const response = await axios.get('/api/spaces');
+      const response = await axios.get('/spaces');
       setSpaces(response.data);
     } catch (error) {
       console.error('Error al cargar espacios:', error);
@@ -24,7 +24,7 @@ const SpaceList = () => {
     if (window.confirm('¿Estás seguro que querés eliminar este espacio?')) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(`/api/spaces/${id}`, {
+        await axios.delete(`/spaces/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchSpaces();
@@ -69,7 +69,7 @@ const SpaceList = () => {
               <TableCell>{space.capacity}</TableCell>
               <TableCell>{space.available ? 'Sí' : 'No'}</TableCell>
               <TableCell>
-                <IconButton onClick={() => navigate(`/admin/editar-espacio/${space._id}`)}>
+                <IconButton onClick={() => navigate(`/admin/spaces/edit/${space._id}`)}>
                   <Edit />
                 </IconButton>
                 <IconButton onClick={() => eliminarEspacio(space._id)} color="error">

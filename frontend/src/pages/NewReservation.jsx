@@ -7,13 +7,17 @@ import {
   Box,
   Alert
 } from '@mui/material';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 
 const NewReservation = () => {
   const { spaceId } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const selectedDate = queryParams.get('date');
+
   const [space, setSpace] = useState(null);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(selectedDate || '');
   const [timeStart, setTimeStart] = useState('');
   const [timeEnd, setTimeEnd] = useState('');
   const [note, setNote] = useState('');

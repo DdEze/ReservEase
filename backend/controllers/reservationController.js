@@ -18,7 +18,6 @@ const createReservation = async (req, res) => {
     if (overlapping) {
       return res.status(400).json({ message: 'Ya existe una reserva que se superpone con ese horario.' });
     }
-
     const reserva = new Reservation({
       user: req.user.id,
       space,

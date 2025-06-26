@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Spaces from './pages/Spaces';
 import NewReservation from './pages/NewReservation';
 import MyReservations from './pages/MyReservations';
+import Calendar from './pages/Calendar';
 import CreateSpace from './pages/admin/CreateSpace';
 import SpaceList from './pages/admin/SpaceList';
 import EditSpace from './pages/admin/EditSpace';
@@ -80,6 +81,14 @@ function App() {
           element={
             <PrivateRoute adminOnly={true}>
               <UserList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/calendar"
+          element={
+            <PrivateRoute>
+              <Calendar />
             </PrivateRoute>
           }
         />

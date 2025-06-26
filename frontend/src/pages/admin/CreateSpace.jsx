@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import axios from '../../api/axios'
 import SpaceForm from '../../components/SpaceForm';
 
 const CreateSpace = () => {
@@ -7,7 +7,7 @@ const CreateSpace = () => {
   const handleCreate = async (formData) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post('/api/spaces', formData, {
+      await axios.post('/spaces', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

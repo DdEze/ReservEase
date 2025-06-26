@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios'
 import SpaceForm from '../../components/SpaceForm';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ const EditSpace = () => {
   useEffect(() => {
     const fetchSpace = async () => {
       try {
-        const response = await axios.get(`/api/spaces/${id}`);
+        const response = await axios.get(`/spaces/${id}`);
         setSpaceData(response.data);
       } catch (error) {
         console.error('Error al cargar espacio:', error.response?.data || error);
@@ -24,7 +24,7 @@ const EditSpace = () => {
   const handleUpdate = async (formData) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`/api/spaces/${id}`, formData, {
+      await axios.put(`/spaces/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -25,6 +25,7 @@ const Navbar = () => {
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/spaces">Espacios</Button>
           <Button color="inherit" component={Link} to="/reservations">Reservas</Button>
+          <Button color="inherit" component={Link} to="/calendar">Calendario</Button>
 
           {/* BOTONES EXCLUSIVOS PARA ADMIN */}
           {user.role === 'admin' && (
