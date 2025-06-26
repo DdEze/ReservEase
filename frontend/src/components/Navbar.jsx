@@ -31,6 +31,9 @@ const Navbar = () => {
           {user.role === 'admin' && (
             <>
               <Button color="inherit" component={Link} to="/admin/spaces">Gestionar espacios</Button>
+              <Button color="inherit" component={Link} to="/admin/reservas">
+                Reservas admin
+              </Button>
               <Button color="inherit" component={Link} to="/admin/usuarios">Usuarios</Button>
             </>
           )}

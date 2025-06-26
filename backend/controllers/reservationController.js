@@ -43,6 +43,17 @@ const getMyReservations = async (req, res) => {
   }
 };
 
+const getAllReservations = async (req, res) => {
+  try {
+    const reservas = await Reservation.find()
+      .populate('space')
+      .populate('user', 'name surname email');
+    res.json(reservas);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener todas las reservas', error });
+  }
+};
+
 const deleteReservation = async (req, res) => {
   try {
     const reservation = await Reservation.findById(req.params.id);
@@ -59,4 +70,4 @@ const deleteReservation = async (req, res) => {
 };
 
 
-module.exports = { createReservation, getMyReservations, deleteReservation };
+module.exports = { createReservation, getMyReservations, deleteReservation, getAllReservations };
