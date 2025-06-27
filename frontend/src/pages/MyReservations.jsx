@@ -5,19 +5,21 @@ import {
   List,
   ListItem,
   ListItemText,
-  Alert,
   Button,
-  Box
+  Box,
+  CircularProgress
 } from '@mui/material';
 import axios from '../api/axios';
 import dayjs from 'dayjs';
+import { useSnackbar } from '../context/SnackbarContext';
 
 const MyReservations = () => {
   const [reservations, setReservations] = useState([]);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { showSnackbar } = useSnackbar();
 
   const fetchReservations = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get('/reservation/mine', {
@@ -25,8 +27,9 @@ const MyReservations = () => {
       });
       setReservations(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
-      console.error('Error al obtener reservas:', err);
-      setError('No se pudieron cargar tus reservas');
+      showSnackbar('No se pudieron cargar tus reservas', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,24 +46,27 @@ const MyReservations = () => {
       await axios.delete(`/reservation/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSuccess('Reserva cancelada correctamente');
+      showSnackbar('Reserva cancelada correctamente', 'success');
       fetchReservations();
     } catch (err) {
       console.error(err);
-      setError('No se pudo cancelar la reserva');
+      showSnackbar('No se pudo cancelar la reserva', 'error');
     }
   };
 
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>Mis Reservas</Typography>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
-      <List>
-        {reservations.length === 0 ? (
-          <Typography>No tenés reservas activas.</Typography>
-        ) : (
-          reservations.map((res) => (
+
+      {loading ? (
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      ) : reservations.length === 0 ? (
+        <Typography>No tenés reservas activas.</Typography>
+      ) : (
+        <List>
+          {reservations.map((res) => (
             <ListItem key={res._id} divider>
               <ListItemText
                 primary={`Espacio: ${res.space?.name ?? 'Desconocido'}`}
@@ -76,9 +82,9 @@ const MyReservations = () => {
                 </Button>
               </Box>
             </ListItem>
-          ))
-        )}
-      </List>
+          ))}
+        </List>
+      )}
     </Container>
   );
 };

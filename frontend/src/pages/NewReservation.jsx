@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
+import { useSnackbar } from '../context/SnackbarContext';
 
 const NewReservation = () => {
   const { spaceId } = useParams();
@@ -21,7 +22,7 @@ const NewReservation = () => {
   const [timeStart, setTimeStart] = useState('');
   const [timeEnd, setTimeEnd] = useState('');
   const [note, setNote] = useState('');
-  const [error, setError] = useState('');
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const NewReservation = () => {
         const res = await axios.get(`/spaces/${spaceId}`);
         setSpace(res.data);
       } catch (err) {
-        setError('Error al cargar el espacio');
+        showSnackbar('Error al cargar el espacio', 'error');
       }
     };
     fetchSpace();
@@ -40,7 +41,7 @@ const NewReservation = () => {
     e.preventDefault();
 
     if (!date || !timeStart || !timeEnd) {
-      return setError('Por favor completá todos los campos requeridos');
+      return showSnackbar('Por favor completá todos los campos requeridos', 'error');
     }
 
     try {
@@ -58,9 +59,10 @@ const NewReservation = () => {
       });
 
       navigate('/reservations');
+      showSnackbar('Reserva creada correctamente', 'success');
     } catch (err) {
       console.error(err);
-      setError('No se pudo crear la reserva');
+      showSnackbar('No se pudo crear la reserva', 'error');
     }
   };
 

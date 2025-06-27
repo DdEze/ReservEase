@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../api/axios'
 import SpaceForm from '../../components/SpaceForm';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const EditSpace = () => {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState(null);
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -15,6 +17,7 @@ const EditSpace = () => {
         setSpaceData(response.data);
       } catch (error) {
         console.error('Error al cargar espacio:', error.response?.data || error);
+        showSnackbar('No se pudieron cargar tus espacios', 'error');
       }
     };
 
@@ -32,6 +35,7 @@ const EditSpace = () => {
       navigate('/spaces');
     } catch (error) {
       console.error('Error al actualizar espacio:', error.response?.data || error);
+      showSnackbar('Error al actualizar espacio', 'error');
     }
   };
 

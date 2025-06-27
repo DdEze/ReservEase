@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import {
-  Container, TextField, Button, Typography, Box, Alert
+  Container, TextField, Button, Typography, Box
 } from '@mui/material';
 import axios from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useSnackbar } from '../context/SnackbarContext';
 
 const Login = () => {
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,7 +20,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLoading(true);
     try {
       const res = await axios.post('/auth/login', form);
       const { token, user } = res.data;
@@ -27,9 +29,13 @@ const Login = () => {
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
 
+      showSnackbar('¡Inicio de sesión exitoso!', 'success');
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.msg || 'Error al iniciar sesión');
+      const msg = err.response?.data?.msg || 'Error al iniciar sesión';
+      showSnackbar(msg, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,11 +43,34 @@ const Login = () => {
     <Container maxWidth="sm">
       <Box mt={5}>
         <Typography variant="h4" gutterBottom>Iniciar Sesión</Typography>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <form onSubmit={handleSubmit}>
-          <TextField fullWidth label="Email" name="email" type="email" margin="normal" onChange={handleChange} required />
-          <TextField fullWidth label="Contraseña" name="password" type="password" margin="normal" onChange={handleChange} required />
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>Ingresar</Button>
+          <TextField
+            fullWidth
+            label="Email"
+            name="email"
+            type="email"
+            margin="normal"
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            fullWidth
+            label="Contraseña"
+            name="password"
+            type="password"
+            margin="normal"
+            onChange={handleChange}
+            required
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ mt: 2 }}
+            disabled={loading} // 🔒 Deshabilitado si está cargando
+          >
+            {loading ? 'Ingresando...' : 'Ingresar'}
+          </Button>
         </form>
         <Typography variant="body2" sx={{ mt: 2 }}>
           ¿No tenés una cuenta?{' '}

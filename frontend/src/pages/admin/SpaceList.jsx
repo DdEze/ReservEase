@@ -6,10 +6,12 @@ import {
 import { Delete, Edit } from '@mui/icons-material';
 import axios from '../../api/axios'
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const SpaceList = () => {
   const [spaces, setSpaces] = useState([]);
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   const fetchSpaces = async () => {
     try {
@@ -17,6 +19,7 @@ const SpaceList = () => {
       setSpaces(response.data);
     } catch (error) {
       console.error('Error al cargar espacios:', error);
+      showSnackbar('Error al cargar espacios', 'error');
     }
   };
 
@@ -28,8 +31,10 @@ const SpaceList = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchSpaces();
+        showSnackbar('Espacio eliminado correctamente', 'success');
       } catch (error) {
         console.error('Error al eliminar espacio:', error);
+        showSnackbar('Error al eliminar espacio', 'error');
       }
     }
   };

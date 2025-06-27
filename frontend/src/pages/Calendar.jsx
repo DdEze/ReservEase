@@ -10,6 +10,7 @@ import {
   TextField, Container, Typography
 } from '@mui/material';
 import dayjs from 'dayjs';
+import { useSnackbar } from '../context/SnackbarContext';
 
 const Calendar = () => {
   const [events, setEvents] = useState([]);
@@ -20,6 +21,7 @@ const Calendar = () => {
   const [timeStart, setTimeStart] = useState('');
   const [timeEnd, setTimeEnd] = useState('');
   const [note, setNote] = useState('');
+  const { showSnackbar } = useSnackbar();
 
 
   const handleReservation = async () => {
@@ -50,9 +52,9 @@ const Calendar = () => {
       setTimeEnd('');
       setNote('');
       fetchEvents();
-      alert('Reserva creada con éxito');
+      showSnackbar('Reserva creada con éxito', 'success');
     } catch (error) {
-      alert('No se pudo crear la reserva');
+      showSnackbar('No se pudo crear la reserva', 'error');
       console.error('Error al crear reserva', error.response?.data || error);
     }
   };
@@ -71,6 +73,7 @@ const Calendar = () => {
       setEvents(eventosFormateados);
     } catch (error) {
       console.error('Error al cargar reservas', error);
+      showSnackbar('Error al cargar reservas', 'error');
     }
   };
 

@@ -10,7 +10,7 @@ import {
   Button,
   Chip,
 } from '@mui/material';
-import axios from 'axios';
+import axios from '../api/axios';
 
 const Spaces = () => {
   const [spaces, setSpaces] = useState([]);
@@ -19,7 +19,7 @@ const Spaces = () => {
   useEffect(() => {
     const fetchSpaces = async () => {
       try {
-        const res = await axios.get('/api/spaces');
+        const res = await axios.get('/spaces');
         setSpaces(Array.isArray(res.data) ? res.data : res.data.spaces || []);
       } catch (err) {
         console.error('Error al obtener espacios:', err);

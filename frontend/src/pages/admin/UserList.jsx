@@ -4,9 +4,11 @@ import {
   TableCell, TableBody, Switch
 } from '@mui/material';
 import axios from '../../api/axios'
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
+  const { showSnackbar } = useSnackbar();
 
   const fetchUsers = async () => {
     try {
@@ -17,6 +19,7 @@ const UserList = () => {
       setUsers(res.data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
+      showSnackbar('Error al obtener usuarios', 'error');
     }
   };
 
@@ -32,6 +35,7 @@ const UserList = () => {
       fetchUsers();
     } catch (error) {
       console.error('Error al cambiar rol:', error);
+      showSnackbar('Error al cambiar rol', 'success');
     }
   };
 
