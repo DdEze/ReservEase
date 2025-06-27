@@ -91,18 +91,38 @@ const NewReservation = () => {
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
+          inputProps={{ step: 1800, min: '08:00', max: '21:00' }}
           value={timeStart}
           onChange={(e) => setTimeStart(e.target.value)}
+          error={timeStart && !['00', '30'].includes(timeStart.split(':')[1])}
+          helperText={
+            timeStart && !['00', '30'].includes(timeStart.split(':')[1])
+              ? 'Minutos solo 00 o 30'
+              : ''
+          }
           required
         />
+
         <TextField
           label="Hora de fin"
           type="time"
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
+          inputProps={{ step: 1800, min: '09:00', max: '22:00' }}
           value={timeEnd}
           onChange={(e) => setTimeEnd(e.target.value)}
+          error={
+            (timeEnd && timeEnd <= timeStart) ||
+            !['00', '30'].includes(timeEnd.split(':')[1])
+          }
+          helperText={
+            timeEnd && timeEnd <= timeStart
+              ? 'La hora de fin debe ser posterior'
+              : !['00', '30'].includes(timeEnd.split(':')[1])
+              ? 'Minutos solo 00 o 30'
+              : ''
+          }
           required
         />
         <TextField

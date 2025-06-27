@@ -130,8 +130,16 @@ const Calendar = () => {
             type="time"
             value={timeStart}
             onChange={(e) => setTimeStart(e.target.value)}
+            inputProps={{ step: 1800, min: '08:00', max: '21:00' }}
             InputLabelProps={{ shrink: true }}
+            error={timeStart && !['00', '30'].includes(timeStart.split(':')[1])}
+            helperText={
+              timeStart && !['00', '30'].includes(timeStart.split(':')[1])
+                ? 'Minutos válidos: 00 o 30'
+                : ''
+            }
           />
+
           <TextField
             fullWidth
             margin="normal"
@@ -139,7 +147,19 @@ const Calendar = () => {
             type="time"
             value={timeEnd}
             onChange={(e) => setTimeEnd(e.target.value)}
+            inputProps={{ step: 1800, min: '09:00', max: '22:00' }}
             InputLabelProps={{ shrink: true }}
+            error={
+              (timeEnd && timeEnd <= timeStart) ||
+              !['00', '30'].includes(timeEnd.split(':')[1])
+            }
+            helperText={
+              timeEnd && timeEnd <= timeStart
+                ? 'La hora de fin debe ser posterior'
+                : !['00', '30'].includes(timeEnd.split(':')[1])
+                ? 'Minutos válidos: 00 o 30'
+                : ''
+            }
           />
           <TextField
             fullWidth
