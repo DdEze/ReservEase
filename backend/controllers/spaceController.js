@@ -54,10 +54,21 @@ const deleteSpace = async (req, res) => {
   }
 };
 
+const getAvailableSpaces = async (req, res) => {
+  try {
+    const spaces = await Space.find({ available: true });
+    res.json(spaces);
+  } catch (error) {
+    console.error('Error fetching available spaces:', error);
+    res.status(500).json({ message: 'Error al obtener espacios disponibles' });
+  }
+};
+
 module.exports = {
   getSpaces,
   getSpaceById,
   createSpace,
   updateSpace,
-  deleteSpace
+  deleteSpace,
+  getAvailableSpaces
 };

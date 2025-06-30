@@ -5,7 +5,8 @@ const {
   getSpaceById,
   createSpace,
   updateSpace,
-  deleteSpace
+  deleteSpace,
+  getAvailableSpaces
 } = require('../controllers/spaceController');
 
 const auth = require('../middleware/authMiddleware');
@@ -14,8 +15,8 @@ const { spaceValidator } = require('../validators/spaceValidator');
 const validate = require('../middleware/validationMiddleware');
 
 router.get('/', getSpaces);
+router.get('/available', getAvailableSpaces);
 router.get('/:id', getSpaceById);
-
 router.post('/', auth, requireAdmin, spaceValidator, validate, createSpace);
 router.put('/:id', auth, requireAdmin, spaceValidator, validate, updateSpace);
 router.delete('/:id', auth, requireAdmin, deleteSpace);
