@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Container, TextField, Button, Typography, Box
+  Container, TextField, Button, Typography, Box, Paper
 } from '@mui/material';
 import axios from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -41,8 +41,24 @@ const Login = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box mt={5}>
-        <Typography variant="h4" gutterBottom>Iniciar Sesión</Typography>
+      <Box mt={5} textAlign="center">
+        <Typography variant="h4" sx={{ color: 'primary.main', mb: 1 }}>
+          ReservEase
+        </Typography>
+      </Box>
+      <Paper
+        elevation={3}
+        sx={{
+          mt: 6,
+          p: 4,
+          borderRadius: 3,
+          bgcolor: 'white'
+        }}
+      >
+        <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>
+          Iniciar Sesión
+        </Typography>
+
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
@@ -67,18 +83,19 @@ const Login = () => {
             variant="contained"
             fullWidth
             sx={{ mt: 2 }}
-            disabled={loading} // 🔒 Deshabilitado si está cargando
+            disabled={loading}
           >
             {loading ? 'Ingresando...' : 'Ingresar'}
           </Button>
         </form>
-        <Typography variant="body2" sx={{ mt: 2 }}>
+
+        <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
           ¿No tenés una cuenta?{' '}
           <Link to="/register" style={{ textDecoration: 'none', color: '#1976d2' }}>
             Registrate acá
           </Link>
         </Typography>
-      </Box>
+      </Paper>
     </Container>
   );
 };

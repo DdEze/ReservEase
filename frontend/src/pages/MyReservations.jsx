@@ -16,6 +16,7 @@ import { useSnackbar } from '../context/SnackbarContext';
 const MyReservations = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(null);
   const { showSnackbar } = useSnackbar();
 
   const fetchReservations = async () => {
@@ -41,6 +42,7 @@ const MyReservations = () => {
     const confirm = window.confirm('¿Estás seguro de cancelar esta reserva?');
     if (!confirm) return;
 
+    setCancelLoading(id);
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`/reservation/${id}`, {
@@ -51,12 +53,14 @@ const MyReservations = () => {
     } catch (err) {
       console.error(err);
       showSnackbar('No se pudo cancelar la reserva', 'error');
+    } finally {
+      setCancelLoading(null);
     }
   };
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Mis Reservas</Typography>
+      <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>Mis Reservas</Typography>
 
       {loading ? (
         <Box display="flex" justifyContent="center" mt={4}>
@@ -67,20 +71,24 @@ const MyReservations = () => {
       ) : (
         <List>
           {reservations.map((res) => (
-            <ListItem key={res._id} divider>
-              <ListItemText
-                primary={`Espacio: ${res.space?.name ?? 'Desconocido'}`}
-                secondary={`Fecha: ${dayjs(res.date).format('DD/MM/YYYY')} | ${res.timeStart} - ${res.timeEnd}`}
-              />
-              <Box>
+            <ListItem
+              key={res._id}
+              divider
+              secondaryAction={
                 <Button
                   variant="outlined"
                   color="error"
                   onClick={() => handleCancel(res._id)}
+                  disabled={cancelLoading === res._id}
                 >
-                  Cancelar
+                  {cancelLoading === res._id ? <CircularProgress size={20} /> : 'Cancelar'}
                 </Button>
-              </Box>
+              }
+            >
+              <ListItemText
+                primary={`Espacio: ${res.space?.name ?? 'Desconocido'}`}
+                secondary={`Fecha: ${dayjs(res.date).format('DD/MM/YYYY')} | ${res.timeStart} - ${res.timeEnd}`}
+              />
             </ListItem>
           ))}
         </List>

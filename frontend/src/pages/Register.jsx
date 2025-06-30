@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Container, TextField, Button, Typography, Box
+  Container, TextField, Button, Typography, Box,
+  Paper
 } from '@mui/material';
 import axios from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -29,22 +30,37 @@ const Register = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box mt={5}>
-        <Typography variant="h4" gutterBottom>Registro</Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField fullWidth label="Nombre" name="name" margin="normal" onChange={handleChange} required />
-          <TextField fullWidth label="Apellido" name="surname" margin="normal" onChange={handleChange} required />
-          <TextField fullWidth label="Email" name="email" type="email" margin="normal" onChange={handleChange} required />
-          <TextField fullWidth label="Contraseña" name="password" type="password" margin="normal" onChange={handleChange} required />
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>Registrarse</Button>
-        </form>
-        <Typography variant="body2" sx={{ mt: 2 }}>
-          ¿Ya tenés una cuenta?{' '}
-          <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
-            Iniciá sesión
-          </Link>
+      <Box mt={5} textAlign="center">
+        <Typography variant="h4" sx={{ color: 'primary.main', mb: 1 }}>
+          ReservEase
         </Typography>
       </Box>
+      <Paper
+              elevation={3}
+              sx={{
+                mt: 6,
+                p: 4,
+                borderRadius: 3,
+                bgcolor: 'white'
+              }}
+            >
+        <Box mt={5}>
+          <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>Registro</Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField fullWidth label="Nombre" name="name" margin="normal" onChange={handleChange} required />
+            <TextField fullWidth label="Apellido" name="surname" margin="normal" onChange={handleChange} required />
+            <TextField fullWidth label="Email" name="email" type="email" margin="normal" onChange={handleChange} required />
+            <TextField fullWidth label="Contraseña" name="password" type="password" margin="normal" onChange={handleChange} required />
+            <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>Registrarse</Button>
+          </form>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            ¿Ya tenés una cuenta?{' '}
+            <Link to="/login" style={{ textDecoration: 'none', color: '#1976d2' }}>
+              Iniciá sesión
+            </Link>
+          </Typography>
+        </Box>
+      </Paper>
     </Container>
   );
 };

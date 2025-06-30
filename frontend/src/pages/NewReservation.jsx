@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Alert
+  Container, Typography, TextField, Button, Box
 } from '@mui/material';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
@@ -22,6 +17,8 @@ const NewReservation = () => {
   const [timeStart, setTimeStart] = useState('');
   const [timeEnd, setTimeEnd] = useState('');
   const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -39,11 +36,11 @@ const NewReservation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!date || !timeStart || !timeEnd) {
       return showSnackbar('Por favor completá todos los campos requeridos', 'error');
     }
 
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       await axios.post('/reservation', {
@@ -53,9 +50,7 @@ const NewReservation = () => {
         timeEnd,
         note,
       }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       navigate('/reservations');
@@ -63,18 +58,18 @@ const NewReservation = () => {
     } catch (err) {
       console.error(err);
       showSnackbar('No se pudo crear la reserva', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!space) return <Typography>Cargando espacio...</Typography>;
+  if (!space) return <Typography sx={{ mt: 4 }}>Cargando espacio...</Typography>;
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>Reservar: {space.name}</Typography>
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom align="center" sx={{ color: 'primary.main', mb: 1 }}>Reservar: {space.name}</Typography>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
-      <Box component="form" onSubmit={handleSubmit}>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField
           label="Fecha"
           type="date"
@@ -85,6 +80,7 @@ const NewReservation = () => {
           onChange={(e) => setDate(e.target.value)}
           required
         />
+
         <TextField
           label="Hora de inicio"
           type="time"
@@ -125,6 +121,7 @@ const NewReservation = () => {
           }
           required
         />
+
         <TextField
           label="Nota (opcional)"
           multiline
@@ -134,8 +131,15 @@ const NewReservation = () => {
           value={note}
           onChange={(e) => setNote(e.target.value)}
         />
-        <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-          Confirmar Reserva
+
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{ mt: 2 }}
+          disabled={loading}
+        >
+          {loading ? 'Enviando...' : 'Confirmar Reserva'}
         </Button>
       </Box>
     </Container>

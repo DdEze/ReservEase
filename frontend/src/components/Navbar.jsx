@@ -32,7 +32,7 @@ const Navbar = () => {
             <>
               <Button color="inherit" component={Link} to="/admin/spaces">Gestionar espacios</Button>
               <Button color="inherit" component={Link} to="/admin/reservas">
-                Reservas admin
+                Todas las Reservas
               </Button>
               <Button color="inherit" component={Link} to="/admin/usuarios">Usuarios</Button>
             </>

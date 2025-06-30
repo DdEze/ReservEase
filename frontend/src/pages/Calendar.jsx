@@ -7,7 +7,7 @@ import axios from '../api/axios';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   FormControl, InputLabel, Select, MenuItem, Button,
-  TextField, Container, Typography
+  TextField, Container, Typography, CircularProgress
 } from '@mui/material';
 import dayjs from 'dayjs';
 import { useSnackbar } from '../context/SnackbarContext';
@@ -21,41 +21,47 @@ const Calendar = () => {
   const [timeStart, setTimeStart] = useState('');
   const [timeEnd, setTimeEnd] = useState('');
   const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const { showSnackbar } = useSnackbar();
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedSpace('');
+    setTimeStart('');
+    setTimeEnd('');
+    setNote('');
+  };
 
   const handleReservation = async () => {
     if (!selectedSpace || !selectedDate || !timeStart || !timeEnd) {
-      console.error('Faltan campos requeridos');
+      showSnackbar('Faltan campos requeridos', 'error');
       return;
     }
 
     const payload = {
       space: selectedSpace,
-      date: selectedDate.slice(0, 10),
+      date: selectedDate,
       timeStart,
       timeEnd,
       note: note || ''
     };
 
-    console.log('Enviando reserva:', payload);
-
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       await axios.post('/reservation', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      setOpenModal(false);
-      setSelectedSpace('');
-      setTimeStart('');
-      setTimeEnd('');
-      setNote('');
+      handleCloseModal();
       fetchEvents();
       showSnackbar('Reserva creada con éxito', 'success');
     } catch (error) {
       showSnackbar('No se pudo crear la reserva', 'error');
       console.error('Error al crear reserva', error.response?.data || error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,8 +78,8 @@ const Calendar = () => {
       }));
       setEvents(eventosFormateados);
     } catch (error) {
-      console.error('Error al cargar reservas', error);
       showSnackbar('Error al cargar reservas', 'error');
+      console.error('Error al cargar reservas', error);
     }
   };
 
@@ -83,21 +89,27 @@ const Calendar = () => {
 
   const handleDateClick = async (arg) => {
     const localDate = dayjs(arg.date).format('YYYY-MM-DD');
-
     setSelectedDate(localDate);
     setOpenModal(true);
 
     try {
-      const res = await axios.get('/spaces');
+      const res = await axios.get('/spaces/available');
       setSpaces(res.data);
     } catch (error) {
+      showSnackbar('Error al cargar espacios', 'error');
       console.error('Error al cargar espacios', error);
     }
   };
 
+  const isTimeValid = (time) =>
+    time && ['00', '30'].includes(time.split(':')[1]);
+
+  const isFormValid = selectedSpace && isTimeValid(timeStart) && isTimeValid(timeEnd) && timeEnd > timeStart;
+
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>Calendario de Reservas</Typography>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>Calendario de Reservas</Typography>
+
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -105,10 +117,9 @@ const Calendar = () => {
         height={600}
         dateClick={handleDateClick}
       />
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>
-          Reservar para el {selectedDate ? selectedDate : '...'}
-        </DialogTitle>
+
+      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+        <DialogTitle>Reservar para el {selectedDate || '...'}</DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="normal">
             <InputLabel>Espacio</InputLabel>
@@ -123,6 +134,7 @@ const Calendar = () => {
               ))}
             </Select>
           </FormControl>
+
           <TextField
             fullWidth
             margin="normal"
@@ -132,9 +144,9 @@ const Calendar = () => {
             onChange={(e) => setTimeStart(e.target.value)}
             inputProps={{ step: 1800, min: '08:00', max: '21:00' }}
             InputLabelProps={{ shrink: true }}
-            error={timeStart && !['00', '30'].includes(timeStart.split(':')[1])}
+            error={timeStart && !isTimeValid(timeStart)}
             helperText={
-              timeStart && !['00', '30'].includes(timeStart.split(':')[1])
+              timeStart && !isTimeValid(timeStart)
                 ? 'Minutos válidos: 00 o 30'
                 : ''
             }
@@ -151,16 +163,17 @@ const Calendar = () => {
             InputLabelProps={{ shrink: true }}
             error={
               (timeEnd && timeEnd <= timeStart) ||
-              !['00', '30'].includes(timeEnd.split(':')[1])
+              !isTimeValid(timeEnd)
             }
             helperText={
               timeEnd && timeEnd <= timeStart
                 ? 'La hora de fin debe ser posterior'
-                : !['00', '30'].includes(timeEnd.split(':')[1])
+                : !isTimeValid(timeEnd)
                 ? 'Minutos válidos: 00 o 30'
                 : ''
             }
           />
+
           <TextField
             fullWidth
             margin="normal"
@@ -171,10 +184,15 @@ const Calendar = () => {
             onChange={(e) => setNote(e.target.value)}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenModal(false)}>Cancelar</Button>
-          <Button onClick={handleReservation} variant="contained" disabled={!selectedSpace}>
-            Confirmar
+
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleCloseModal}>Cancelar</Button>
+          <Button
+            onClick={handleReservation}
+            variant="contained"
+            disabled={!isFormValid || loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Confirmar'}
           </Button>
         </DialogActions>
       </Dialog>

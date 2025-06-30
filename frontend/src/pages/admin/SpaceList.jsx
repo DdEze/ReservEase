@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Typography, Button, Table, TableBody, TableCell,
-  TableHead, TableRow, IconButton, Box
+  TableHead, TableRow, IconButton, Box, Paper, TableContainer
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import axios from '../../api/axios'
+import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../../context/SnackbarContext';
 
@@ -44,47 +44,64 @@ const SpaceList = () => {
   }, []);
 
   return (
-    <Container>
-      <Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
-        <Typography variant="h4">Gestión de Espacios</Typography>
+    <Container sx={{ mt: 4 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h4" sx={{ color: 'primary.main', mb: 1 }}>Gestión de Espacios</Typography>
         <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate('/admin/spaces/new')}
+          variant="contained"
+          onClick={() => navigate('/admin/spaces/new')}
         >
-            Crear nuevo espacio
+          Crear nuevo espacio
         </Button>
       </Box>
 
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Ubicación</TableCell>
-            <TableCell>Capacidad</TableCell>
-            <TableCell>Disponible</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {spaces.map((space) => (
-            <TableRow key={space._id}>
-              <TableCell>{space.name}</TableCell>
-              <TableCell>{space.location}</TableCell>
-              <TableCell>{space.capacity}</TableCell>
-              <TableCell>{space.available ? 'Sí' : 'No'}</TableCell>
-              <TableCell>
-                <IconButton onClick={() => navigate(`/admin/spaces/edit/${space._id}`)}>
-                  <Edit />
-                </IconButton>
-                <IconButton onClick={() => eliminarEspacio(space._id)} color="error">
-                  <Delete />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {spaces.length === 0 ? (
+        <Typography variant="body1" color="text.secondary">
+          No hay espacios registrados.
+        </Typography>
+      ) : (
+        <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Nombre</strong></TableCell>
+                <TableCell><strong>Ubicación</strong></TableCell>
+                <TableCell><strong>Capacidad</strong></TableCell>
+                <TableCell><strong>Disponible</strong></TableCell>
+                <TableCell><strong>Acciones</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {spaces.map((space) => (
+                <TableRow
+                  key={space._id}
+                  hover
+                  sx={{ transition: 'background-color 0.2s' }}
+                >
+                  <TableCell>{space.name}</TableCell>
+                  <TableCell>{space.location}</TableCell>
+                  <TableCell>{space.capacity}</TableCell>
+                  <TableCell>{space.available ? 'Sí' : 'No'}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => navigate(`/admin/spaces/edit/${space._id}`)}
+                      color="primary"
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => eliminarEspacio(space._id)}
+                      color="error"
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Container>
   );
 };

@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Box,
+  Paper
+} from '@mui/material';
 
 const SpaceForm = ({ initialData = {}, onSubmit, submitText = "Guardar" }) => {
   const [formData, setFormData] = useState({
@@ -20,7 +27,7 @@ const SpaceForm = ({ initialData = {}, onSubmit, submitText = "Guardar" }) => {
         available: initialData.available ?? true,
       });
     }
-  }, []);
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -36,57 +43,76 @@ const SpaceForm = ({ initialData = {}, onSubmit, submitText = "Guardar" }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextField
-        label="Nombre"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        fullWidth
-        required
-        margin="normal"
-      />
-      <TextField
-        label="Ubicación"
-        name="location"
-        value={formData.location}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Capacidad"
-        name="capacity"
-        type="number"
-        value={formData.capacity}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Descripción"
-        name="description"
-        value={formData.description}
-        onChange={handleChange}
-        fullWidth
-        multiline
-        rows={3}
-        margin="normal"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={formData.available}
-            onChange={handleChange}
-            name="available"
-          />
-        }
-        label="Disponible"
-      />
-      <Button type="submit" variant="contained" color="primary">
-        {submitText}
-      </Button>
-    </form>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        maxWidth: 600,
+      }}
+    >
+      <Paper
+              elevation={3}
+              sx={{
+                mt: 6,
+                p: 4,
+                borderRadius: 3,
+                bgcolor: 'white'
+              }}
+      >
+        <TextField
+          label="Nombre"
+          name="name"
+          value={formData.name}
+          margin= "normal"
+          onChange={handleChange}
+          fullWidth
+          required
+        />
+        <TextField
+          label="Ubicación"
+          name="location"
+          margin= "normal"
+          value={formData.location}
+          onChange={handleChange}
+          fullWidth
+        />
+        <TextField
+          label="Capacidad"
+          name="capacity"
+          margin= "normal"
+          type="number"
+          value={formData.capacity}
+          onChange={handleChange}
+          fullWidth
+        />
+        <TextField
+          label="Descripción"
+          name="description"
+          margin= "normal"
+          value={formData.description}
+          onChange={handleChange}
+          fullWidth
+          multiline
+          rows={3}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formData.available}
+              onChange={handleChange}
+              name="available"
+            />
+          }
+          label="Disponible"
+        />
+        <Button type="submit" variant="contained" color="primary">
+          {submitText}
+        </Button>
+      </Paper>
+    </Box>
   );
 };
 
