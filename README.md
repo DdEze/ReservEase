@@ -1,7 +1,9 @@
 # ReservEase
 
-[@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-[@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses
+![Babel](https://babeljs.io/) for Fast Refresh
+![@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses 
+![SWC](https://swc.rs/) for Fast Refresh
 ![React Version](https://img.shields.io/badge/react-18.2.0-blue)
 ![MongoDB](https://img.shields.io/badge/mongodb-4.4-green)
 ![Node.js](https://img.shields.io/badge/node-%3E=16.0.0-brightgreen)
