@@ -144,6 +144,7 @@ La app se ejecutará en http://localhost:3000.
 
 ## Estructura del proyecto
 
+```
 reservease/
 ├── backend/
 │   ├── config/
