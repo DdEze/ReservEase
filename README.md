@@ -60,7 +60,7 @@ Cuenta con autenticación basada en JWT, un calendario interactivo, gestión de 
 
     - Cambiar su rol (usuario ↔ administrador) mediante un switch.
 
-## Experiencia de usuario (UX/UI)
+### Experiencia de usuario (UX/UI)
 
 - Snackbar para mostrar notificaciones de éxito o error.
 
