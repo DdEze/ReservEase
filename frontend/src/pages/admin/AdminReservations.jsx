@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Typography, Table, TableHead, TableRow,
-  TableCell, TableBody
+  TableCell, TableBody, IconButton
 } from '@mui/material';
-import axios from '../../api/axios'
+import { Delete } from '@mui/icons-material';
+import axios from '../../api/axios';
 import { useSnackbar } from '../../context/SnackbarContext';
 
 const AdminReservations = () => {
@@ -23,6 +24,23 @@ const AdminReservations = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    const confirm = window.confirm('¿Estás seguro de eliminar esta reserva?');
+    if (!confirm) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/reservation/admin/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showSnackbar('Reserva eliminada correctamente', 'success');
+      fetchReservations();
+    } catch (error) {
+      console.error('Error al eliminar reserva:', error);
+      showSnackbar('Error al eliminar reserva', 'error');
+    }
+  };
+
   useEffect(() => {
     fetchReservations();
   }, []);
@@ -39,6 +57,7 @@ const AdminReservations = () => {
             <TableCell>Espacio</TableCell>
             <TableCell>Fecha</TableCell>
             <TableCell>Horario</TableCell>
+            <TableCell>Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,6 +70,14 @@ const AdminReservations = () => {
                 {reservation.timeStart && reservation.timeEnd
                   ? `${reservation.timeStart} - ${reservation.timeEnd}`
                   : 'Horario no definido'}
+              </TableCell>
+              <TableCell>
+                <IconButton
+                  color="error"
+                  onClick={() => handleDelete(reservation._id)}
+                >
+                  <Delete />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
