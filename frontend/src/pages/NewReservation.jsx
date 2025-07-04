@@ -52,7 +52,6 @@ const NewReservation = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
       navigate('/reservations');
       showSnackbar('Reserva creada correctamente', 'success');
     } catch (err) {
