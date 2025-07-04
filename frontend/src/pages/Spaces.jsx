@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container, Typography, Grid, Card, CardContent,
-  CardActions, Button, Chip, Box
+  Container, Typography, Box, Card, CardContent,
+  CardActions, Button, Chip
 } from '@mui/material';
 import axios from '../api/axios';
 
@@ -28,39 +28,61 @@ const Spaces = () => {
       <Typography variant="h4" gutterBottom align="center" sx={{ color: 'primary.main' }}>
         Espacios Disponibles
       </Typography>
-      <Grid container spacing={3}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
+          gap: 3
+        }}
+      >
         {spaces.map((space) => (
-          <Grid item xs={12} sm={6} md={4} key={space._id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', minHeight: 250, mx: 'auto' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" gutterBottom>{space.name}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  {space.description || 'Sin descripción'}
-                </Typography>
-                <Typography variant="body2">📍 Ubicación: {space.location}</Typography>
-                <Typography variant="body2">👥 Capacidad: {space.capacity}</Typography>
-              </CardContent>
+          <Card
+            key={space._id}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              minHeight: 300
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography variant="h6" gutterBottom>{space.name}</Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  mb: 1,
+                  overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical'
+                }}
+              >
+                {space.description || 'Sin descripción'}
+              </Typography>
+              <Typography variant="body2">📍 Ubicación: {space.location}</Typography>
+              <Typography variant="body2">👥 Capacidad: {space.capacity}</Typography>
+            </CardContent>
 
-              <CardActions sx={{ justifyContent: 'space-between', mt: 'auto', px: 2, pb: 2 }}>
-                <Chip
-                  label={space.available ? 'Disponible' : 'No disponible'}
-                  color={space.available ? 'success' : 'default'}
+            <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
+              <Chip
+                label={space.available ? 'Disponible' : 'No disponible'}
+                color={space.available ? 'success' : 'default'}
+                size="small"
+              />
+              {space.available && (
+                <Button
+                  variant="contained"
                   size="small"
-                />
-                {space.available && (
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => navigate(`/reservations/new/${space._id}`)}
-                  >
-                    Reservar
-                  </Button>
-                )}
-              </CardActions>
-            </Card>
-          </Grid>
+                  onClick={() => navigate(`/reservations/new/${space._id}`)}
+                >
+                  Reservar
+                </Button>
+              )}
+            </CardActions>
+          </Card>
         ))}
-      </Grid>
+      </Box>
     </Container>
   );
 };
