@@ -39,6 +39,7 @@ const Register = () => {
               elevation={3}
               sx={{
                 mt: 6,
+                mb: 2,
                 p: 4,
                 borderRadius: 3,
                 bgcolor: 'white'
